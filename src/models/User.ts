@@ -9,9 +9,10 @@ export interface UserDocument extends Document {
     password: string;
     createdAt: Date;
     updatedAt: Date;
+    remove: () => Promise<UserDocument>;
 }
 
-const UserSchema: Schema = new Schema({
+const UserSchema: Schema = new Schema<UserDocument>({
     isAdmin: {
         type: Boolean,
         default: false,
