@@ -4,7 +4,7 @@ import asyncHandler from 'express-async-handler';
 import User, { UserDocument } from '../models/User';
 
 interface AuthenticatedRequest extends Request {
-  user?: UserDocument;
+    user?: UserDocument;
 }
 
 const verifyJWT = asyncHandler(async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -34,6 +34,14 @@ const verifyJWT = asyncHandler(async (req: AuthenticatedRequest, res: Response, 
         res.status(401);
         throw new Error('Not authorized');
     }
+});
+
+export const isAdmin = asyncHandler(async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    if (!req.user?.isAdmin) {
+        res.status(403);
+        throw new Error('Not authorized as an admin');
+    }
+    next();
 });
 
 export default verifyJWT;
