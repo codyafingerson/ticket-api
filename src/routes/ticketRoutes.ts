@@ -10,8 +10,9 @@ router.get("/", verifyJWT, isAdmin, TicketController.getTickets);
 router.get("/:id", verifyJWT, TicketController.getTicketById);
 router.put("/:id", verifyJWT, isAdmin, TicketController.updateTicket);
 router.delete("/:id", verifyJWT, isAdmin, TicketController.deleteTicket);
-router.get("/open", verifyJWT, TicketController.getOpenTickets);
-router.get("/in-progress", verifyJWT, isAdmin, TicketController.getInProgressTickets);
-router.get("/closed", verifyJWT, isAdmin, TicketController.getClosedTickets);
+router.get('/status/open', TicketController.getTicketsByStatus);
+router.get('/status/closed', TicketController.getTicketsByStatus);
+router.get('/status/in-progress', TicketController.getTicketsByStatus);
+
 
 export default router;

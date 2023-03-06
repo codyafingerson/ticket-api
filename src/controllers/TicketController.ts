@@ -149,39 +149,19 @@ class TicketController {
     });
 
     /**
-     * Get all tickets with a specific status
-     * @param req Request object
-     * @param res Response object
-     * @returns Array of tickets
-     * @static
-     * 
-     */
-    static getOpenTickets = asyncHandler(async (req: Request, res: Response) => {
-        const tickets = await Ticket.find({ status: "Open" });
-        res.json(tickets);
-    });
-
-    /**
-     * Get all tickets with a specific status
+     * Get all tickets with a specific status and return them
      * @param req Request object
      * @param res Response object
      * @returns Array of tickets
      * @static
      */
-    static getClosedTickets = asyncHandler(async (req: Request, res: Response) => {
-        const tickets = await Ticket.find({ status: "Closed" });
-        res.json(tickets);
-    });
-
-    /**
-     * Get all tickets with a specific status
-     * @param req Request object
-     * @param res Response object
-     * @returns Array of tickets
-     * @static
-     */
-    static getInProgressTickets = asyncHandler(async (req: Request, res: Response) => {
-        const tickets = await Ticket.find({ status: "In Progress" });
+    static getTicketsByStatus = asyncHandler(async (req: Request, res: Response) => {
+        const { status } = req.params;
+        const tickets = await Ticket.find({ status });
+        if(tickets.length === 0) {
+            res.status(404);
+            throw new Error("No tickets found");
+        }
         res.json(tickets);
     });
 
