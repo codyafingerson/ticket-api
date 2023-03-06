@@ -35,7 +35,7 @@ class UserController {
         token: generateToken(user._id.toString()),
       });
     } else {
-      res.status(401);
+      res.status(401).json({ errorMessage: "Invalid username or password" });
       throw new Error("Invalid username or password");
     }
   });
@@ -62,7 +62,7 @@ class UserController {
     const userExists = await User.findOne({ username });
 
     if (userExists) {
-      res.status(400);
+      res.status(400).json({ errorMessage: "User already exists" });
       throw new Error("User already exists");
     }
 
@@ -90,7 +90,7 @@ class UserController {
         token: generateToken(user._id),
       });
     } else {
-      res.status(400);
+      res.status(400).json({ errorMessage: "Invalid user data" });
       throw new Error("Invalid user data");
     }
   });
@@ -124,7 +124,7 @@ class UserController {
         username: user.username,
       });
     } else {
-      res.status(404);
+      res.status(404).json({ errorMessage: "User not found" });
       throw new Error("User not found");
     }
   });
@@ -142,14 +142,14 @@ class UserController {
     const { id } = req.params;
 
     if (!id) {
-      res.status(400);
+      res.status(400).json({ errorMessage: "No user id provided" });
       throw new Error("No user id provided");
     }
 
     const user = await User.findById(id);
 
     if (!user) {
-      res.status(404);
+      res.status(404).json({ errorMessage: "User not found" });
       throw new Error("User not found");
     }
 
@@ -201,17 +201,17 @@ class UserController {
     const { id } = req.params;
 
     if (!id) {
-      res.status(400);
+      res.status(400).json({ errorMessage: "No user id provided" });
       throw new Error("No user id provided");
     }
 
     const user: UserDocument = await User.findById(id);
 
     if (!user) {
-      res.status(404);
+      res.status(404).json({ errorMessage: "User not found" });
       throw new Error("User not found");
     }
-    
+
     await user.remove();
 
     res.json({ message: "User removed" });
@@ -228,6 +228,10 @@ class UserController {
    */
   static getUsers = asyncHandler(async (req: Request, res: Response) => {
     const users = await User.find({});
+    if (!users) {
+      res.status(404).json({ errorMessage: "Users not found" });
+      throw new Error("Users not found");
+    }
     res.json(users);
   });
 }

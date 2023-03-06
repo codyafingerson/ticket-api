@@ -53,7 +53,7 @@ class TicketController {
                 stationRecords: ticket.stationRecords,
             });
         } else {
-            res.status(400);
+            res.status(400).json({ errorMessage: "Invalid ticket data" });
             throw new Error("Invalid ticket data");
         }
     });
@@ -67,6 +67,10 @@ class TicketController {
      */
     static getTickets = asyncHandler(async (req: Request, res: Response) => {
         const tickets = await Ticket.find({});
+        if(tickets.length === 0) {
+            res.status(404).json({ errorMessage: "No tickets found" });
+            throw new Error("No tickets found");
+        }
         res.json(tickets);
     });
 
@@ -83,7 +87,7 @@ class TicketController {
         if (ticket) {
             res.json(ticket);
         } else {
-            res.status(404);
+            res.status(404).json({ errorMessage: "Ticket not found" });
             throw new Error("Ticket not found");
         }
     });
@@ -123,7 +127,7 @@ class TicketController {
             const updatedTicket = await ticket.save();
             res.json(updatedTicket);
         } else {
-            res.status(404);
+            res.status(404).json({ errorMessage: "Ticket not found" });
             throw new Error("Ticket not found");
         }
     });
@@ -143,7 +147,7 @@ class TicketController {
             await ticket.remove();
             res.json({ message: "Ticket removed" });
         } else {
-            res.status(404);
+            res.status(404).json({ errorMessage: "Ticket not found" });
             throw new Error("Ticket not found");
         }
     });
@@ -159,7 +163,7 @@ class TicketController {
         const { status } = req.params;
         const tickets = await Ticket.find({ status });
         if(tickets.length === 0) {
-            res.status(404);
+            res.status(404).json({ errorMessage: "No tickets found" });
             throw new Error("No tickets found");
         }
         res.json(tickets);
