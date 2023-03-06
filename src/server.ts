@@ -7,6 +7,7 @@ import connectDatabase from './config/connectDatabase';
 import redirectHttp from './middleware/redirectHttp';
 import userRoutes from './routes/userRoutes';
 import ticketRoutes from './routes/ticketRoutes';
+import templateRoutes from "./routes/templateRoutes";
 
 class Server {
     private app: express.Application;
@@ -40,6 +41,7 @@ class Server {
     private routes(): void {
         this.app.use('/api/users', userRoutes);
         this.app.use('/api/tickets', ticketRoutes);
+        this.app.use('/api/templates', templateRoutes);
 
         this.app.get('/', (req, res) => {
             res.json({ message: `Connected to ${process.env.NODE_ENV} server`})
