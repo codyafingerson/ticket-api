@@ -100,9 +100,8 @@ class TemplateController {
   });
 
   static deleteTemplate = asyncHandler(async (req: Request, res: Response) => {
-    const template = await Template.findById(req.params.id);
+    const template: TemplateDocument = await Template.findById(req.params.id);
     if (template) {
-      // @ts-ignore - remove is not a property of template
       await template.remove();
       res.json({ message: "Template removed" });
     } else {
