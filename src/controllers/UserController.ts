@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import User from "../models/User";
+import User, { UserDocument } from "../models/User";
 import bcrypt from "bcryptjs";
 import generateToken from "../utils/generateToken";
 import { Request, Response } from "express";
@@ -205,13 +205,13 @@ class UserController {
       throw new Error("No user id provided");
     }
 
-    const user = await User.findById(id);
+    const user: UserDocument = await User.findById(id);
 
     if (!user) {
       res.status(404);
       throw new Error("User not found");
     }
-
+    
     await user.remove();
 
     res.json({ message: "User removed" });
