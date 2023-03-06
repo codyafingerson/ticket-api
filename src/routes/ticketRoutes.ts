@@ -1,17 +1,17 @@
 import { Router } from "express";
 
 import TicketController from "../controllers/TicketController";
-import verifyJWT from "../middleware/verifyJWT";
+import verifyJWT, { isAdmin } from "../middleware/verifyJWT";
 
 const router = Router();
 
-router.post("/", verifyJWT, TicketController.createTicket);
-router.get("/", verifyJWT, TicketController.getTickets);
+router.post("/", verifyJWT, isAdmin, TicketController.createTicket);
+router.get("/", verifyJWT, isAdmin, TicketController.getTickets);
 router.get("/:id", verifyJWT, TicketController.getTicketById);
-router.put("/:id", verifyJWT, TicketController.updateTicket);
-router.delete("/:id", verifyJWT, TicketController.deleteTicket);
+router.put("/:id", verifyJWT, isAdmin, TicketController.updateTicket);
+router.delete("/:id", verifyJWT, isAdmin, TicketController.deleteTicket);
 router.get("/open", verifyJWT, TicketController.getOpenTickets);
-router.get("/in-progress", verifyJWT, TicketController.getInProgressTickets);
-router.get("/closed", verifyJWT, TicketController.getClosedTickets);
+router.get("/in-progress", verifyJWT, isAdmin, TicketController.getInProgressTickets);
+router.get("/closed", verifyJWT, isAdmin, TicketController.getClosedTickets);
 
 export default router;
