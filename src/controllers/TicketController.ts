@@ -8,6 +8,15 @@ import { Request, Response } from "express";
  * @exports TicketController
  */
 class TicketController {
+
+    /**
+     * Create a new ticket in the database and return the created ticket
+     * @param req Request object
+     * @param res Response object
+     * @returns Created ticket
+     * @throws Error if ticket data is invalid
+     * @static
+     */
     static createTicket = asyncHandler(async (req: Request, res: Response) => {
         const {
             status,
@@ -49,11 +58,26 @@ class TicketController {
         }
     });
 
+    /**
+     * Get all tickets in the database and return them
+     * @param req Request object
+     * @param res Response object
+     * @returns Array of tickets
+     * @static
+     */
     static getTickets = asyncHandler(async (req: Request, res: Response) => {
         const tickets = await Ticket.find({});
         res.json(tickets);
     });
 
+    /**
+     * Get a ticket by its id and return it
+     * @param req Request object
+     * @param res Response object
+     * @returns Ticket
+     * @throws Error if ticket is not found
+     * @static
+     */
     static getTicketById = asyncHandler(async (req: Request, res: Response) => {
         const ticket = await Ticket.findById(req.params.id);
         if (ticket) {
@@ -64,6 +88,14 @@ class TicketController {
         }
     });
 
+    /**
+     * Update a ticket by its id and return the updated ticket
+     * @param req Request object
+     * @param res Response object
+     * @returns Updated ticket
+     * @throws Error if ticket is not found
+     * @static
+     */
     static updateTicket = asyncHandler(async (req: Request, res: Response) => {
         const {
             status,
@@ -96,6 +128,14 @@ class TicketController {
         }
     });
 
+    /**
+     * Delete a ticket by its id
+     * @param req Request object
+     * @param res Response object
+     * @returns Success message
+     * @throws Error if ticket is not found
+     * @static
+     */
     static deleteTicket = asyncHandler(async (req: Request, res: Response) => {
         const ticket: TicketDocument | null = await Ticket.findById(req.params.id);
         if (ticket) {
@@ -108,21 +148,50 @@ class TicketController {
         }
     });
 
+    /**
+     * Get all tickets with a specific status
+     * @param req Request object
+     * @param res Response object
+     * @returns Array of tickets
+     * @static
+     * 
+     */
     static getOpenTickets = asyncHandler(async (req: Request, res: Response) => {
         const tickets = await Ticket.find({ status: "Open" });
         res.json(tickets);
     });
 
+    /**
+     * Get all tickets with a specific status
+     * @param req Request object
+     * @param res Response object
+     * @returns Array of tickets
+     * @static
+     */
     static getClosedTickets = asyncHandler(async (req: Request, res: Response) => {
         const tickets = await Ticket.find({ status: "Closed" });
         res.json(tickets);
     });
 
+    /**
+     * Get all tickets with a specific status
+     * @param req Request object
+     * @param res Response object
+     * @returns Array of tickets
+     * @static
+     */
     static getInProgressTickets = asyncHandler(async (req: Request, res: Response) => {
         const tickets = await Ticket.find({ status: "In Progress" });
         res.json(tickets);
     });
 
+    /**
+     * Get all tickets with a specific status
+     * @param req Request object
+     * @param res Response object
+     * @returns Array of tickets
+     * @static
+     */
     static searchTickets = asyncHandler(async (req: Request, res: Response) => {
         const { search } = req.body;
         const tickets = await Ticket.find({

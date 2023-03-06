@@ -6,6 +6,15 @@ import { Request, Response } from "express";
  * Template Controller for managing templates in the database
  */
 class TemplateController {
+
+  /**
+   * Create a new template in the database and return the created template
+   * @param req Request object
+   * @param res Response object
+   * @returns Created template
+   * @throws Error if template data is invalid
+   * @static
+   */
   static createTemplate = asyncHandler(async (req: Request, res: Response) => {
     const {
       templateName,
@@ -44,11 +53,26 @@ class TemplateController {
     }
   });
 
+  /**
+   * Get all templates in the database and return them
+   * @param req Request object
+   * @param res Response object
+   * @returns Array of templates
+   * @static
+   */
   static getTemplates = asyncHandler(async (req: Request, res: Response) => {
     const templates = await Template.find({});
     res.json(templates);
   });
 
+  /**
+   * Get a template by id and return it if it exists
+   * @param req Request object
+   * @param res Response object
+   * @returns Template
+   * @throws Error if template is not found
+   * @static
+   */
   static getTemplateById = asyncHandler(async (req: Request, res: Response) => {
     const template = await Template.findById(req.params.id);
     if (template) {
@@ -59,6 +83,14 @@ class TemplateController {
     }
   });
 
+  /**
+   * Update a template by id and return the updated template
+   * @param req Request object
+   * @param res Response object
+   * @returns Updated template
+   * @throws Error if template is not found
+   * @static
+   */
   static updateTemplate = asyncHandler(async (req: Request, res: Response) => {
     const {
       templateName,
@@ -99,6 +131,14 @@ class TemplateController {
     }
   });
 
+  /**
+   * Delete a template by id if it exists
+   * @param req Request object
+   * @param res Response object
+   * @returns Success message
+   * @throws Error if template is not found
+   * @static
+   */
   static deleteTemplate = asyncHandler(async (req: Request, res: Response) => {
     const template: TemplateDocument = await Template.findById(req.params.id);
     if (template) {
