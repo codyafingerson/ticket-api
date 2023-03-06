@@ -1,16 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-interface ITemplateFile extends Document {
-    name: string;
-    data: string;
-    size: number;
-}
-const TemplateFileSchema: Schema = new Schema({
-    name: { type: String, required: true },
-    data: { type: String, required: true },
-    size: { type: Number, required: true },
-});
-
 export interface TicketDocument extends Document {
     status: string;
     ticketNumber: number;
@@ -18,6 +7,10 @@ export interface TicketDocument extends Document {
     revision: string;
     quantity: number;
     lotNumber: number;
+    notes: [{
+        body: string;
+        createdBy: string;
+    }];
     partInventory: [{
         partNumber: string;
         description: string;
@@ -31,9 +24,10 @@ export interface TicketDocument extends Document {
     }];
     createdAt: Date;
     updatedAt: Date;
-    templateFile?: ITemplateFile; // add the templateFile field to the interface
+    remove: () => Promise<TicketDocument>;
 }
-const TicketSchema: Schema = new mongoose.Schema({
+
+const TicketSchema: Schema = new Schema<TicketDocument>({
     status: {
         type: String,
         enum: ['open', 'in-progress', 'closed']
@@ -55,6 +49,15 @@ const TicketSchema: Schema = new mongoose.Schema({
     lotNumber: {
         type: Number
     },
+    notes: [{
+        body: {
+            type: String,
+            maxLength: 255,
+        },
+        createdBy: {
+            type: String,
+        },
+    }],
     partInventory: [{
         partNumber: {
             type: String
@@ -79,12 +82,11 @@ const TicketSchema: Schema = new mongoose.Schema({
         dateCompleted: {
             type: Date
         }
-    }],
-    templateFile: TemplateFileSchema
+    }]
 },
-{
-    timestamps: true
-});
+    {
+        timestamps: true
+    });
 
 const Ticket = mongoose.model<TicketDocument>('Ticket', TicketSchema);
 
