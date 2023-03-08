@@ -12,11 +12,13 @@ export interface TicketDocument extends Document {
         createdBy: string;
     }];
     partInventory: [{
+        id: mongoose.Types.ObjectId;
         partNumber: string;
         description: string;
         currentLot: string;
     }];
     stationRecords: [{
+        id: mongoose.Types.ObjectId;
         station: string;
         completedBy: string;
         timeTaken: number;
