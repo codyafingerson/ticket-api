@@ -1,4 +1,5 @@
 import asyncHandler from "express-async-handler";
+import mongoose from "mongoose";
 import Ticket, { TicketDocument } from "../models/Ticket";
 import { Request, Response } from "express";
 
@@ -67,7 +68,7 @@ class TicketController {
      */
     static getTickets = asyncHandler(async (req: Request, res: Response) => {
         const tickets = await Ticket.find({});
-        if(tickets.length === 0) {
+        if (tickets.length === 0) {
             res.status(404).json({ errorMessage: "No tickets found" });
             throw new Error("No tickets found");
         }
@@ -162,11 +163,181 @@ class TicketController {
     static getTicketsByStatus = asyncHandler(async (req: Request, res: Response) => {
         const { status } = req.params;
         const tickets = await Ticket.find({ status });
-        if(tickets.length === 0) {
+        if (tickets.length === 0) {
             res.status(404).json({ errorMessage: "No tickets found" });
             throw new Error("No tickets found");
         }
         res.json(tickets);
+    });
+
+    /**
+     * Get all tickets with a specific ticket number and return them
+     * @param req Request object
+     * @param res Response object
+     * @returns Array of tickets
+     * @static
+     */
+    static noteHandler = asyncHandler(async (req: Request, res: Response): Promise<any> => {
+        const { method, params, body } = req;
+
+        const { id } = params;
+
+        switch (method) { 
+            // If the request is a PUT request, add a note to the ticket
+            case "PUT":
+                try {
+                    const ticket = await Ticket.findById(id);
+
+                    if (!ticket) {
+                        res.status(404).json({ message: "Ticket not found" });
+                    }
+
+                    const note = { body: body.body, createdBy: body.createdBy };
+                    ticket.notes.push(note);
+                    await ticket.save();
+
+                    return res.status(201).json({ message: "Note added to ticket", note });
+                } catch (error) {
+                    res.status(500).json({ message: "Server error" });
+                    throw new Error(error);
+                }
+               
+            case "DELETE":
+                const { noteId } = params;
+                try {
+                    const ticket = await Ticket.findByIdAndUpdate(
+                        id,
+                        { $pull: { notes: { _id: noteId } } },
+                        { new: true }
+                    );
+                    return res.status(200).json(ticket);
+                } catch (error) {
+                    res.status(500).json({ message: "Failed to delete note" });
+                    throw new Error(error);
+                }
+                
+            default:
+                return res.status(405).json({ message: "Method Not Allowed" });
+               
+        }
+    });
+
+    /**
+     * Add a new component to a ticket or delete an existing component from a ticket
+     * @param req Request object
+     * @param res Response object
+     * @returns Updated ticket
+     * @throws Error if ticket is not found
+     * @static
+     */
+    static partInventoryHandler = asyncHandler(async (req: Request, res: Response): Promise<any> => {
+        const { method } = req;
+        const { partNumber, description, currentLot } = req.body;
+        const { id } = req.params;
+      
+        try {
+          const ticket: TicketDocument = await Ticket.findById(id);
+      
+          switch (method) {
+            case "PUT":
+              // Create a new component object
+              const newPart = {
+                partNumber,
+                description,
+                currentLot,
+                id: new mongoose.Types.ObjectId()
+              };
+      
+              // Add the new component to the ticket's components array
+              ticket.partInventory.push(newPart);
+      
+              // Save the updated ticket
+              const updatedTicket = await ticket.save();
+      
+              res.status(200).json(updatedTicket);
+              break;
+            case "DELETE":
+              const { partId } = req.params;
+              try {
+                const ticket = await Ticket.findByIdAndUpdate(
+                  id,
+                  { $pull: { partInventory: { _id: partId } } },
+                  { new: true }
+                );
+                return res.status(200).json(ticket);
+              } catch (error) {
+                res.status(500).json({ message: "Failed to delete part" });
+                throw new Error(error);
+              }
+            default:
+              return res.status(405).json({ message: "Method Not Allowed" });
+          }
+      
+        } catch (err) {
+          throw new Error(err.message);
+          res.status(500).send("Server Error");
+        }
+      });
+      
+    /**
+     * Add a new station record to a ticket or delete an existing station record from a ticket
+     * @param req Request object
+     * @param res Response object
+     * @returns Updated ticket
+     * @throws Error if ticket is not found
+     * @static
+     */
+    static stationRecordsHandler = asyncHandler(async (req: Request, res: Response): Promise<any> => {
+        const { method } = req;
+        const { station, completedBy, timeTaken, dateCompleted } = req.body;
+        const { id } = req.params;
+
+        try {
+            const ticket: TicketDocument = await Ticket.findById(id);
+
+            switch (method) {
+                case "PUT":
+                    try {
+                        // Create a new station record object
+                        const newStationRecord = {
+                            station,
+                            completedBy,
+                            timeTaken,
+                            dateCompleted,
+                            id: new mongoose.Types.ObjectId()
+                        };
+                
+                        // Add the new station record to the ticket's stationRecords array
+                        ticket.stationRecords.push(newStationRecord);
+                
+                        // Save the updated ticket
+                        const updatedTicket = await ticket.save();
+                
+                        return res.status(201).json(updatedTicket);
+                    } catch (error) {
+                        res.status(500).json({ message: "Server error" });
+                        throw new Error(error);
+                    }
+                case "DELETE":
+                    const { recordId } = req.params;
+                    try {
+                        const ticket = await Ticket.findByIdAndUpdate(
+                            id,
+                            { $pull: { stationRecords: { _id: recordId } } },
+                            { new: true }
+                        );
+                        return res.status(200).json(ticket);
+                    } catch (error) {
+                        res.status(500).json({ message: "Failed to delete record" });
+                        throw new Error(error);
+                    }
+                default:
+                    return res.status(405).json({ message: "Method Not Allowed" });
+            }
+        } catch (err) {
+            res.status(500).send("Server Error");
+            throw new Error(err.message);
+        }
     });
 
     /**
@@ -191,7 +362,7 @@ class TicketController {
             ],
         });
         res.json(tickets);
-    });
+    }); 
 }
 
 export default TicketController;
