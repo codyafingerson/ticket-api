@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Route Docs</title>
+    <style>
+        .route {
+            border: 1px solid black;
+            padding: 10px;
+            margin: 10px;
+        }
+    </style>
+  </head>
+  <body>
+    <h1>Ticket API Route Information</h1>
+    <div>
+        <h2>Base URL</h2>
+        <p>https://localhost:443</p>
+    </div>
+    <div>
+        <h2>Access Modifiers</h2>
+        <p><b>Public</b> - Anyone can access this route</p>
+        <p><b>Private</b> - Only logged in users can access this route</p>
+        <p><b>Admin</b> - Only logged in admin users can access this route</p>
+    </div>
+    <div>
+      <div class="route">
+        <h2>Template Routes</h2>
+        <ul>
+          <li>POST /api/template - Create a new template (ADMIN)</li>
+          <li>GET /api/template - Get all templates (ADMIN)</li>
+          <li>GET /api/template/:id - Get template by it's id number (ADMIN)</li>
+          <li>PUT /api/template/:id - Update a template by it's id number (ADMIN)</li>
+          <li>DELETE /api/template/:id - Delete a template by it's id (ADMIN)</li>
+        </ul>
+      </div>
+      <div class="route">
+        <h2>Ticket Routes</h2>
+        <ul>
+          <li>POST /api/ticket - Creates new ticket (ADMIN)</li>
+          <li>GET /api/ticket - Returns all tickets (ADMIN)</li>
+          <li>GET /api/ticket/:id - Get a ticket by it's id number (PRIVATE)</li>
+          <li>PUT /api/ticket/:id - Update a ticket by it's id number (ADMIN)</li>
+          <li>DELETE /api/ticket/:id - Delete a ticket by it's id number (ADMIN)</li>
+          <li>GET /api/ticket/status/open - Get tickets with an OPEN status (PRIVATE)</li>
+          <li>
+            GET /api/ticket/status/closed - Get tickets with a CLOSED status
+            (ADMIN)
+          </li>
+          <li>GET /api/ticket/status/in-progress
+            - Get tickets with an IN-PROGRESS status
+            (ADMIN)
+          </li>
+        </ul>
+      </div>
+      <div class="route">
+        <h2>User Routes</h2>
+        <ul>
+          <li>POST /api/user/login - Login a user (PUBLIC)</li>
+          <li>POST /api/user/register - Register a user (ADMIN)</li>
+          <li>GET /api/user/:id - Get a user by it's id number (ADMIN)</li>
+          <li>PUT /api/user/:id - Update a user by it's id number (ADMIN)</li>
+          <li>DELETE /api/user/:id - Delete a user by its id number (ADMIN)</li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>
