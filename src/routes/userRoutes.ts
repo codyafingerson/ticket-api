@@ -1,13 +1,13 @@
 import { Router } from "express";
 import UserController from "../controllers/UserController";
-import verifyJWT, { isAdmin } from "../middleware/verifyJWT";
+import AuthMiddleware from "../middleware/AuthMiddleware";
 
 const router = Router();
 
 router.post("/login", UserController.loginUser);
 router.post("/register", UserController.registerUser);
-router.get("/:id", verifyJWT, UserController.getUser);
-router.put("/:id", verifyJWT, UserController.updateUser);
-router.delete("/:id", verifyJWT, UserController.deleteUser);
+router.get("/:id", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, UserController.getUser);
+router.put("/:id", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, UserController.updateUser);
+router.delete("/:id", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, UserController.deleteUser);
 
 export default router;

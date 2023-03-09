@@ -1,33 +1,33 @@
 import { Router } from "express";
 import TicketController from "../controllers/TicketController";
-import verifyJWT, { isAdmin } from "../middleware/verifyJWT";
+import AuthMiddleware from "../middleware/AuthMiddleware";
 
 const router = Router();
 
 // Tickets
 router.route("/")
-  .post(verifyJWT, isAdmin, TicketController.createTicket)
-  .get(verifyJWT, isAdmin, TicketController.getTickets);
+  .post(AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.createTicket)
+  .get(AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.getTickets);
 
 router.route("/:id")
-  .get(verifyJWT, TicketController.getTicketById)
-  .put(verifyJWT, isAdmin, TicketController.updateTicket)
-  .delete(verifyJWT, isAdmin, TicketController.deleteTicket);
+  .get(AuthMiddleware.verifyJWT, TicketController.getTicketById)
+  .put(AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.updateTicket)
+  .delete(AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.deleteTicket);
 
 router.get("/status/open", TicketController.getTicketsByStatus);
 router.get("/status/closed", TicketController.getTicketsByStatus);
 router.get("/status/in-progress", TicketController.getTicketsByStatus);
 
 // Notes
-router.put("/:id/new-note", verifyJWT, TicketController.noteHandler);
-router.delete("/:id/remove-note/:noteId", verifyJWT, isAdmin, TicketController.noteHandler);
+router.put("/:id/new-note", AuthMiddleware.verifyJWT, TicketController.noteHandler);
+router.delete("/:id/remove-note/:noteId", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.noteHandler);
 
 // Part inventory
-router.put("/:id/add-part", verifyJWT, isAdmin, TicketController.partInventoryHandler);
-router.delete("/:id/remove-part/:partId", verifyJWT, isAdmin, TicketController.partInventoryHandler);
+router.put("/:id/add-part", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.partInventoryHandler);
+router.delete("/:id/remove-part/:partId", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.partInventoryHandler);
 
 // Station records
-router.put("/:id/add-station", verifyJWT, isAdmin, TicketController.stationRecordsHandler);
-router.delete("/:id/remove-station/:stationId", verifyJWT, isAdmin, TicketController.stationRecordsHandler);
+router.put("/:id/add-station", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.stationRecordsHandler);
+router.delete("/:id/remove-station/:stationId", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.stationRecordsHandler);
 
 export default router;
