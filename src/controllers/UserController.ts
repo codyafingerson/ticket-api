@@ -6,8 +6,6 @@ import { Request, Response } from "express";
 
 /**
  * User controller class for handling user related requests and responses
- * @class UserController
- * @exports UserController
  */
 class UserController {
   /**

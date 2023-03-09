@@ -5,8 +5,6 @@ import { Request, Response } from "express";
 
 /**
  * Ticket controller class for handling ticket related requests and responses
- * @class TicketController
- * @exports TicketController
  */
 class TicketController {
 
