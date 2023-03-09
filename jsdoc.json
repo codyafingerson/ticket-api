@@ -1,0 +1,21 @@
+{
+  "plugins": [
+    "plugins/markdown",
+    "node_modules/better-docs/typescript"
+  ],
+  "recurseDepth": 10,
+  "source": {
+    "include": ["src", "src/routes"],
+    "includePattern": "\\.(jsx|js|ts|tsx)$",
+    "excludePattern": "(node_modules/|docs)"
+  },
+  "opts": {
+    "destination": "./docs",
+    "recurse": true,
+    "readme": "./readme.md",
+    "template": "node_modules/better-docs"
+  },
+  "tags": {
+    "allowUnknownTags": ["optional"]
+  }
+}
