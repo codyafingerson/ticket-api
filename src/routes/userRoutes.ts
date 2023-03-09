@@ -1,3 +1,7 @@
+/** Express router providing user related routes
+ * @module routers/users
+ * @requires express
+ */
 import { Router } from "express";
 import UserController from "../controllers/UserController";
 import AuthMiddleware from "../middleware/AuthMiddleware";
