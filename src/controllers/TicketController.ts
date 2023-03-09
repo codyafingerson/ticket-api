@@ -52,7 +52,7 @@ class TicketController {
                 stationRecords: ticket.stationRecords,
             });
         } else {
-            res.status(400).json({ errorMessage: "Invalid ticket data" });
+            res.status(400);
             throw new Error("Invalid ticket data");
         }
     });
@@ -67,7 +67,7 @@ class TicketController {
     static getTickets = asyncHandler(async (req: Request, res: Response) => {
         const tickets = await Ticket.find({});
         if (tickets.length === 0) {
-            res.status(404).json({ errorMessage: "No tickets found" });
+            res.status(404);
             throw new Error("No tickets found");
         }
         res.json(tickets);
@@ -86,7 +86,7 @@ class TicketController {
         if (ticket) {
             res.json(ticket);
         } else {
-            res.status(404).json({ errorMessage: "Ticket not found" });
+            res.status(404);
             throw new Error("Ticket not found");
         }
     });
@@ -126,7 +126,7 @@ class TicketController {
             const updatedTicket = await ticket.save();
             res.json(updatedTicket);
         } else {
-            res.status(404).json({ errorMessage: "Ticket not found" });
+            res.status(404);
             throw new Error("Ticket not found");
         }
     });
@@ -146,7 +146,7 @@ class TicketController {
             await ticket.remove();
             res.json({ message: "Ticket removed" });
         } else {
-            res.status(404).json({ errorMessage: "Ticket not found" });
+            res.status(404);
             throw new Error("Ticket not found");
         }
     });
@@ -162,7 +162,7 @@ class TicketController {
         const { status } = req.params;
         const tickets = await Ticket.find({ status });
         if (tickets.length === 0) {
-            res.status(404).json({ errorMessage: "No tickets found" });
+            res.status(404);
             throw new Error("No tickets found");
         }
         res.json(tickets);
@@ -196,8 +196,8 @@ class TicketController {
 
                     return res.status(201).json({ message: "Note added to ticket", note });
                 } catch (error) {
-                    res.status(500).json({ message: "Server error" });
-                    throw new Error(error);
+                    res.status(500);
+                    throw new Error("Server error");
                 }
                
             case "DELETE":
@@ -210,8 +210,8 @@ class TicketController {
                     );
                     return res.status(200).json(ticket);
                 } catch (error) {
-                    res.status(500).json({ message: "Failed to delete note" });
-                    throw new Error(error);
+                    res.status(500);
+                    throw new Error("Server error");
                 }
                 
             default:
@@ -264,16 +264,16 @@ class TicketController {
                 );
                 return res.status(200).json(ticket);
               } catch (error) {
-                res.status(500).json({ message: "Failed to delete part" });
-                throw new Error(error);
+                res.status(500);
+                throw new Error("Server error");
               }
             default:
               return res.status(405).json({ message: "Method Not Allowed" });
           }
       
         } catch (err) {
-          throw new Error(err.message);
-          res.status(500).send("Server Error");
+            res.status(500)
+          throw new Error("Server error");
         }
       });
       
@@ -313,8 +313,8 @@ class TicketController {
                 
                         return res.status(201).json(updatedTicket);
                     } catch (error) {
-                        res.status(500).json({ message: "Server error" });
-                        throw new Error(error);
+                        res.status(500);
+                        throw new Error("Server error");
                     }
                 case "DELETE":
                     const { recordId } = req.params;
@@ -326,15 +326,15 @@ class TicketController {
                         );
                         return res.status(200).json(ticket);
                     } catch (error) {
-                        res.status(500).json({ message: "Failed to delete record" });
-                        throw new Error(error);
+                        res.status(500);
+                        throw new Error("Server error");
                     }
                 default:
                     return res.status(405).json({ message: "Method Not Allowed" });
             }
         } catch (err) {
-            res.status(500).send("Server Error");
-            throw new Error(err.message);
+            res.status(500);
+            throw new Error("Server error");
         }
     });
 

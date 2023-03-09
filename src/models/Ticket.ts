@@ -1,5 +1,10 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
+/**
+ * Ticket Interface
+ * @interface TicketDocument
+ * @extends {Document}
+ */
 export interface TicketDocument extends Document {
     status: string;
     ticketNumber: number;
@@ -29,6 +34,9 @@ export interface TicketDocument extends Document {
     remove: () => Promise<TicketDocument>;
 }
 
+/**
+ * Ticket Schema
+ */
 const TicketSchema: Schema = new Schema<TicketDocument>({
     status: {
         type: String,

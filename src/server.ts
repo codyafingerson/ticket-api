@@ -9,6 +9,10 @@ import userRoutes from './routes/userRoutes';
 import ticketRoutes from './routes/ticketRoutes';
 import templateRoutes from "./routes/templateRoutes";
 
+/**
+ * Server class to handle server configuration and routes
+ * This class is used to start the server
+ */
 class Server {
     private app: express.Application;
     private readonly port: number;

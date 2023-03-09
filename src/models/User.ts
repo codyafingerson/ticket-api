@@ -1,5 +1,10 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
+/**
+ * User Interface
+ * @interface UserDocument
+ * @extends {Document}
+ */
 export interface UserDocument extends Document {
     isAdmin: boolean;
     firstName: string;
@@ -12,6 +17,9 @@ export interface UserDocument extends Document {
     remove: () => Promise<UserDocument>;
 }
 
+/**
+ * User Schema
+ */
 const UserSchema: Schema = new Schema<UserDocument>({
     isAdmin: {
         type: Boolean,

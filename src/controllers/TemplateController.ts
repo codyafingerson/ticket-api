@@ -48,7 +48,7 @@ class TemplateController {
         stationRecords: template.stationRecords,
       });
     } else {
-      res.status(400).json({ errorMessage: "Invalid template data" });
+      res.status(400);
       throw new Error("Invalid template data");
     }
   });
@@ -63,7 +63,7 @@ class TemplateController {
   static getTemplates = asyncHandler(async (req: Request, res: Response) => {
     const templates = await Template.find({});
     if(!templates) {
-      res.status(404).json({ errorMessage: "No templates found" });
+      res.status(404);
       throw new Error("No templates found");
     }
 
@@ -83,7 +83,7 @@ class TemplateController {
     if (template) {
       res.json(template);
     } else {
-      res.status(404).json({ errorMessage: "Template not found" });
+      res.status(404);
       throw new Error("Template not found");
     }
   });
@@ -131,7 +131,7 @@ class TemplateController {
         stationRecords: updatedTemplate.stationRecords,
       });
     } else {
-      res.status(404).json({ errorMessage: "Template not found" });
+      res.status(404);
       throw new Error("Template not found");
     }
   });
@@ -150,7 +150,7 @@ class TemplateController {
       await template.remove();
       res.json({ message: "Template removed" });
     } else {
-      res.status(404).json({ errorMessage: "Template not found" });
+      res.status(404);
       throw new Error("Template not found");
     }
   });

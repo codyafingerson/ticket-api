@@ -1,5 +1,10 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
+/**
+ * Template Interface
+ * @interface TemplateDocument
+ * @extends {Document}
+ */
 export interface TemplateDocument extends Document {
     templateName: string;
     productName: string;
@@ -22,6 +27,9 @@ export interface TemplateDocument extends Document {
     remove: () => Promise<TemplateDocument>;
 }
 
+/**
+ * Template Schema
+ */
 const TemplateSchema: Schema = new Schema<TemplateDocument>({
     templateName: {
         type: String,
