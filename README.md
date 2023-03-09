@@ -1,7 +1,7 @@
 
 Ticket Management API
 ===============================
-### The Ticket Management API is a Representational State Transfer (RESTful) API developed using TypeScript and the Express library. The API's backend is powered by MongoDB, which provides full CRUD (Create, Read, Update, Delete) functionality for managing Operation Tickets. This functionality allows businesses to effectively track and manage internal tickets related to customer orders, including those associated with assembly lines. The API utilizes the popular Mongoose library to facilitate connections to MongoDB and enforces user authentication through the use of JSON Web Tokens (JWTs). This comprehensive solution presents businesses with a robust and flexible option for streamlining their internal ticketing processes.
+The Ticket Management API is a Representational State Transfer (RESTful) API developed using TypeScript and the Express library. The API's backend is powered by MongoDB, which provides full CRUD (Create, Read, Update, Delete) functionality for managing Operation Tickets. This functionality allows businesses to effectively track and manage internal tickets related to customer orders, including those associated with assembly lines. The API utilizes the popular Mongoose library to facilitate connections to MongoDB and enforces user authentication through the use of JSON Web Tokens (JWTs). This comprehensive solution presents businesses with a robust and flexible option for streamlining their internal ticketing processes.
 
 * * *
 
