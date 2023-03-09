@@ -36,6 +36,7 @@ class Server {
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: false }));
         this.app.use(redirectHttp);
+        this.app.use('/docs', express.static('docs')); // Serve docs folder
     }
 
     private routes(): void {
