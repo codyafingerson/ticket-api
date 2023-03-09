@@ -1,58 +1,46 @@
-<header>
-    <h1>Operation Ticket Management API</h1>
-</header>
-<hr />
-<h2>Getting Started</h2>
-<ol>
-    <li>Clone the repository</li>
-    <li>Run <code>npm install</code> to install the required dependencies</li>
-    <li>Run <code>npm start</code> to start the application</li>
-    <li>Run <code>npm run dev</code> to start the application in development mode (compiles & runs application after
-        source changes)</li>
-</ol>
 
-<hr />
-<h2>Testing</h2>
-<sup>** Please note this has yet to be implemented</sup>
-<p>Run <code>npm test</code> to run the test suite</p>
+Operation Ticket Management API
+===============================
 
-<hr />
+* * *
 
-<h2>API Documentation</h2>
+Getting started tips
+--------------------
 
-<h3>Authentication</h3>
-<p>Authentication is done using JWT tokens. To get a token, make a POST request to
-    <code>https://localhost:{YOUR_PORT}/api/auth/login</code> with the following payload</p>
-<sub>
-    <p>Keys annotated with * are required</p>
-</sub>
-<pre>
-{
-      "isAdmin": null,
-    * "firstname": "John",
-    * "lastname": "Doe",
-    * "username": "johndoe",
-      "email": "jdoe@exmaple.com"
-    * "password": "1234"
-}
-</pre>
+This application uses the https protocol. Therefore, it is recommended to follow the steps outlined below.
 
-<h4>Commands available in this application</h4>
-<table>
-    <thead>
-        <tr>
-            <th>Command</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><code>npm install</code></td>
-            <td>Install required dependencies for the application</td>
-        </tr>
-        <tr>
-            <td><code>npm run build</code></td>
-            <td>Compile the application to the <a href="/build">build</a> directory</td>
-        </tr>
-    </tbody>
-</table>
+### Setting the application up on your machine
+
+1.  Create the `.env` file in the root of the project. (See [`.env.sample`](.env.sample) for guidance.)
+2.  Due to the application using the https protocol, begin by generating a `certificate.crt` file and a `private.key` file, using the command `openssl req -nodes -new -x509 -keyout server.key -out server.cert` assuming you have the openssl cli installed. If not, you can install it [here](https://www.openssl.org/source/)
+3.  Install corresponding Node.js packaged using the `npm install` command.
+4.  Test your configuration is running properly by running `npm run dev` or `npm run start`.
+
+* * *
+
+API Documentation
+-----------------
+
+### Authentication
+
+Authentication is done using JWT tokens. To get a token, make a POST request to `https://localhost:{YOUR_PORT}/api/auth/login` with the following payload
+
+<sup>Keys annotated with \* are required. See [models/User](src/models/User.ts) for which fields are required in the database.</sup>
+
+    {
+          "isAdmin": null,
+        * "firstname": "John",
+        * "lastname": "Doe",
+        * "username": "johndoe",
+          "email": "jdoe@exmaple.com"
+        * "password": "1234"
+    }
+
+#### Commands available in this application
+|Command  | Description |
+|--|--|
+| `npm install` | Install required dependencies for the application |
+| `npm run build` | Compile the application to the build directory |
+| `npm run start` | Start the application in production mode. (Must run build command before!) |
+| `npm run dev` | Start the application in development mode. This will also run the typescript compiler in watch mode as well as utilize the npm package nodemon, which is install as a dev dependency |
+| `npm run docs` | Build the documentation included in the source code to the [`docs`](/docs) directory. The route `/docs` will become available when the application is running. |
