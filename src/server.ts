@@ -55,8 +55,8 @@ class Server {
 
     public start(): void {
         const options = {
-            key: fs.readFileSync('./private.key'),
-            cert: fs.readFileSync('./certificate.crt')
+            key: fs.readFileSync(process.env.PATH_TO_KEY),
+            cert: fs.readFileSync(process.env.PATH_TO_CERT)
         };
 
         https.createServer(options, this.app).listen(this.port, () => {
