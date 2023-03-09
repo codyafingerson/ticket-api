@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> controllers/TemplateController.ts</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-routers_users.html">routers/users</a></li></ul><h3>Classes</h3><ul><li><a href="AuthMiddleware.html">AuthMiddleware</a></li><li><a href="Server.html">Server</a></li><li><a href="TemplateController.html">TemplateController</a></li><li><a href="TicketController.html">TicketController</a></li><li><a href="UserController.html">UserController</a></li></ul><h3>Interfaces</h3><ul><li><a href="AuthenticatedRequest.html">AuthenticatedRequest</a></li><li><a href="TemplateDocument.html">TemplateDocument</a></li><li><a href="TicketDocument.html">TicketDocument</a></li><li><a href="UserDocument.html">UserDocument</a></li></ul><h3>Global</h3><ul><li><a href="global.html#TemplateSchema">TemplateSchema</a></li><li><a href="global.html#TicketSchema">TicketSchema</a></li><li><a href="global.html#UserSchema">UserSchema</a></li><li><a href="global.html#connectDatabase">connectDatabase</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#generateToken">generateToken</a></li><li><a href="global.html#redirectHttp">redirectHttp</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>controllers/TemplateController.ts</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import asyncHandler from "express-async-handler";
+import Template, { TemplateDocument } from "../models/Template";
+import { Request, Response } from "express";
+
+/**
+ * Template Controller for managing templates in the database
+ */
+class TemplateController {
+
+  /**
+   * Create a new template in the database and return the created template
+   * @param req Request object
+   * @param res Response object
+   * @returns Created template
+   * @throws Error if template data is invalid
+   * @static
+   */
+  static createTemplate = asyncHandler(async (req: Request, res: Response) => {
+    const {
+      templateName,
+      productName,
+      revision,
+      quantity,
+      lotNumber,
+      partInventory,
+      stationRecords,
+    } = req.body;
+
+    const template = await Template.create({
+      templateName,
+      productName,
+      revision,
+      quantity,
+      lotNumber,
+      partInventory,
+      stationRecords,
+    });
+
+    if (template) {
+      res.status(201).json({
+        _id: template._id,
+        templateName: template.templateName,
+        productName: template.productName,
+        revision: template.revision,
+        quantity: template.quantity,
+        lotNumber: template.lotNumber,
+        partInventory: template.partInventory,
+        stationRecords: template.stationRecords,
+      });
+    } else {
+      res.status(400);
+      throw new Error("Invalid template data");
+    }
+  });
+
+  /**
+   * Get all templates in the database and return them
+   * @param req Request object
+   * @param res Response object
+   * @returns Array of templates
+   * @static
+   */
+  static getTemplates = asyncHandler(async (req: Request, res: Response) => {
+    const templates = await Template.find({});
+    if(!templates) {
+      res.status(404);
+      throw new Error("No templates found");
+    }
+
+    res.json(templates);
+  });
+
+  /**
+   * Get a template by id and return it if it exists
+   * @param req Request object
+   * @param res Response object
+   * @returns Template
+   * @throws Error if template is not found
+   * @static
+   */
+  static getTemplateById = asyncHandler(async (req: Request, res: Response) => {
+    const template = await Template.findById(req.params.id);
+    if (template) {
+      res.json(template);
+    } else {
+      res.status(404);
+      throw new Error("Template not found");
+    }
+  });
+
+  /**
+   * Update a template by id and return the updated template
+   * @param req Request object
+   * @param res Response object
+   * @returns Updated template
+   * @throws Error if template is not found
+   * @static
+   */
+  static updateTemplate = asyncHandler(async (req: Request, res: Response) => {
+    const {
+      templateName,
+      productName,
+      revision,
+      quantity,
+      lotNumber,
+      partInventory,
+      stationRecords,
+    } = req.body;
+
+    const template = await Template.findById(req.params.id);
+
+    if (template) {
+      template.templateName = templateName;
+      template.productName = productName;
+      template.revision = revision;
+      template.quantity = quantity;
+      template.lotNumber = lotNumber;
+      template.partInventory = partInventory;
+      template.stationRecords = stationRecords;
+
+      const updatedTemplate = await template.save();
+
+      res.json({
+        _id: updatedTemplate._id,
+        templateName: updatedTemplate.templateName,
+        productName: updatedTemplate.productName,
+        revision: updatedTemplate.revision,
+        quantity: updatedTemplate.quantity,
+        lotNumber: updatedTemplate.lotNumber,
+        partInventory: updatedTemplate.partInventory,
+        stationRecords: updatedTemplate.stationRecords,
+      });
+    } else {
+      res.status(404);
+      throw new Error("Template not found");
+    }
+  });
+
+  /**
+   * Delete a template by id if it exists
+   * @param req Request object
+   * @param res Response object
+   * @returns Success message
+   * @throws Error if template is not found
+   * @static
+   */
+  static deleteTemplate = asyncHandler(async (req: Request, res: Response) => {
+    const template: TemplateDocument = await Template.findById(req.params.id);
+    if (template) {
+      await template.remove();
+      res.json({ message: "Template removed" });
+    } else {
+      res.status(404);
+      throw new Error("Template not found");
+    }
+  });
+}
+
+export default TemplateController;</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>

@@ -1,0 +1,482 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> controllers/TicketController.ts</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-routers_users.html">routers/users</a></li></ul><h3>Classes</h3><ul><li><a href="AuthMiddleware.html">AuthMiddleware</a></li><li><a href="Server.html">Server</a></li><li><a href="TemplateController.html">TemplateController</a></li><li><a href="TicketController.html">TicketController</a></li><li><a href="UserController.html">UserController</a></li></ul><h3>Interfaces</h3><ul><li><a href="AuthenticatedRequest.html">AuthenticatedRequest</a></li><li><a href="TemplateDocument.html">TemplateDocument</a></li><li><a href="TicketDocument.html">TicketDocument</a></li><li><a href="UserDocument.html">UserDocument</a></li></ul><h3>Global</h3><ul><li><a href="global.html#TemplateSchema">TemplateSchema</a></li><li><a href="global.html#TicketSchema">TicketSchema</a></li><li><a href="global.html#UserSchema">UserSchema</a></li><li><a href="global.html#connectDatabase">connectDatabase</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#generateToken">generateToken</a></li><li><a href="global.html#redirectHttp">redirectHttp</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>controllers/TicketController.ts</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import asyncHandler from "express-async-handler";
+import mongoose from "mongoose";
+import Ticket, { TicketDocument } from "../models/Ticket";
+import { Request, Response } from "express";
+
+/**
+ * Ticket controller class for handling ticket related requests and responses
+ */
+class TicketController {
+
+    /**
+     * Create a new ticket in the database and return the created ticket
+     * @param req Request object
+     * @param res Response object
+     * @returns Created ticket
+     * @throws Error if ticket data is invalid
+     * @static
+     */
+    static createTicket = asyncHandler(async (req: Request, res: Response) => {
+        const {
+            status,
+            ticketNumber,
+            productName,
+            revision,
+            quantity,
+            lotNumber,
+            partInventory,
+            stationRecords,
+        } = req.body;
+
+        const ticket = await Ticket.create({
+            status,
+            ticketNumber,
+            productName,
+            revision,
+            quantity,
+            lotNumber,
+            partInventory,
+            stationRecords,
+        });
+
+        if (ticket) {
+            res.status(201).json({
+                _id: ticket._id,
+                status: ticket.status,
+                ticketNumber: ticket.ticketNumber,
+                productName: ticket.productName,
+                revision: ticket.revision,
+                quantity: ticket.quantity,
+                lotNumber: ticket.lotNumber,
+                partInventory: ticket.partInventory,
+                stationRecords: ticket.stationRecords,
+            });
+        } else {
+            res.status(400);
+            throw new Error("Invalid ticket data");
+        }
+    });
+
+    /**
+     * Get all tickets in the database and return them
+     * @param req Request object
+     * @param res Response object
+     * @returns Array of tickets
+     * @static
+     */
+    static getTickets = asyncHandler(async (req: Request, res: Response) => {
+        const tickets = await Ticket.find({});
+        if (tickets.length === 0) {
+            res.status(404);
+            throw new Error("No tickets found");
+        }
+        res.json(tickets);
+    });
+
+    /**
+     * Get a ticket by its id and return it
+     * @param req Request object
+     * @param res Response object
+     * @returns Ticket
+     * @throws Error if ticket is not found
+     * @static
+     */
+    static getTicketById = asyncHandler(async (req: Request, res: Response) => {
+        const ticket = await Ticket.findById(req.params.id);
+        if (ticket) {
+            res.json(ticket);
+        } else {
+            res.status(404);
+            throw new Error("Ticket not found");
+        }
+    });
+
+    /**
+     * Update a ticket by its id and return the updated ticket
+     * @param req Request object
+     * @param res Response object
+     * @returns Updated ticket
+     * @throws Error if ticket is not found
+     * @static
+     */
+    static updateTicket = asyncHandler(async (req: Request, res: Response) => {
+        const {
+            status,
+            ticketNumber,
+            productName,
+            revision,
+            quantity,
+            lotNumber,
+            partInventory,
+            stationRecords,
+        } = req.body;
+
+        const ticket = await Ticket.findById(req.params.id);
+
+        if (ticket) {
+            ticket.status = status;
+            ticket.ticketNumber = ticketNumber;
+            ticket.productName = productName;
+            ticket.revision = revision;
+            ticket.quantity = quantity;
+            ticket.lotNumber = lotNumber;
+            ticket.partInventory = partInventory;
+            ticket.stationRecords = stationRecords;
+
+            const updatedTicket = await ticket.save();
+            res.json(updatedTicket);
+        } else {
+            res.status(404);
+            throw new Error("Ticket not found");
+        }
+    });
+
+    /**
+     * Delete a ticket by its id
+     * @param req Request object
+     * @param res Response object
+     * @returns Success message
+     * @throws Error if ticket is not found
+     * @static
+     */
+    static deleteTicket = asyncHandler(async (req: Request, res: Response) => {
+        const ticket: TicketDocument | null = await Ticket.findById(req.params.id);
+        if (ticket) {
+            // @ts-ignore - TS doesn't like the mongoose delete method
+            await ticket.remove();
+            res.json({ message: "Ticket removed" });
+        } else {
+            res.status(404);
+            throw new Error("Ticket not found");
+        }
+    });
+
+    /**
+     * Get all tickets with a specific status and return them
+     * @param req Request object
+     * @param res Response object
+     * @returns Array of tickets
+     * @static
+     */
+    static getTicketsByStatus = asyncHandler(async (req: Request, res: Response) => {
+        const { status } = req.params;
+        const tickets = await Ticket.find({ status });
+        if (tickets.length === 0) {
+            res.status(404);
+            throw new Error("No tickets found");
+        }
+        res.json(tickets);
+    });
+
+    /**
+     * Get all tickets with a specific ticket number and return them
+     * @param req Request object
+     * @param res Response object
+     * @returns Array of tickets
+     * @static
+     */
+    static noteHandler = asyncHandler(async (req: Request, res: Response): Promise&lt;any> => {
+        const { method, params, body } = req;
+
+        const { id } = params;
+
+        switch (method) { 
+            // If the request is a PUT request, add a note to the ticket
+            case "PUT":
+                try {
+                    const ticket = await Ticket.findById(id);
+
+                    if (!ticket) {
+                        res.status(404).json({ message: "Ticket not found" });
+                    }
+
+                    const note = { body: body.body, createdBy: body.createdBy };
+                    ticket.notes.push(note);
+                    await ticket.save();
+
+                    return res.status(201).json({ message: "Note added to ticket", note });
+                } catch (error) {
+                    res.status(500);
+                    throw new Error("Server error");
+                }
+               
+            case "DELETE":
+                const { noteId } = params;
+                try {
+                    const ticket = await Ticket.findByIdAndUpdate(
+                        id,
+                        { $pull: { notes: { _id: noteId } } },
+                        { new: true }
+                    );
+                    return res.status(200).json(ticket);
+                } catch (error) {
+                    res.status(500);
+                    throw new Error("Server error");
+                }
+                
+            default:
+                return res.status(405).json({ message: "Method Not Allowed" });
+               
+        }
+    });
+
+    /**
+     * Add a new component to a ticket or delete an existing component from a ticket
+     * @param req Request object
+     * @param res Response object
+     * @returns Updated ticket
+     * @throws Error if ticket is not found
+     * @static
+     */
+    static partInventoryHandler = asyncHandler(async (req: Request, res: Response): Promise&lt;any> => {
+        const { method } = req;
+        const { partNumber, description, currentLot } = req.body;
+        const { id } = req.params;
+      
+        try {
+          const ticket: TicketDocument = await Ticket.findById(id);
+      
+          switch (method) {
+            case "PUT":
+              // Create a new component object
+              const newPart = {
+                partNumber,
+                description,
+                currentLot,
+                id: new mongoose.Types.ObjectId()
+              };
+      
+              // Add the new component to the ticket's components array
+              ticket.partInventory.push(newPart);
+      
+              // Save the updated ticket
+              const updatedTicket = await ticket.save();
+      
+              res.status(200).json(updatedTicket);
+              break;
+            case "DELETE":
+              const { partId } = req.params;
+              try {
+                const ticket = await Ticket.findByIdAndUpdate(
+                  id,
+                  { $pull: { partInventory: { _id: partId } } },
+                  { new: true }
+                );
+                return res.status(200).json(ticket);
+              } catch (error) {
+                res.status(500);
+                throw new Error("Server error");
+              }
+            default:
+              return res.status(405).json({ message: "Method Not Allowed" });
+          }
+      
+        } catch (err) {
+            res.status(500)
+          throw new Error("Server error");
+        }
+      });
+      
+    /**
+     * Add a new station record to a ticket or delete an existing station record from a ticket
+     * @param req Request object
+     * @param res Response object
+     * @returns Updated ticket
+     * @throws Error if ticket is not found
+     * @static
+     */
+    static stationRecordsHandler = asyncHandler(async (req: Request, res: Response): Promise&lt;any> => {
+        const { method } = req;
+        const { station, completedBy, timeTaken, dateCompleted } = req.body;
+        const { id } = req.params;
+
+        try {
+            const ticket: TicketDocument = await Ticket.findById(id);
+
+            switch (method) {
+                case "PUT":
+                    try {
+                        // Create a new station record object
+                        const newStationRecord = {
+                            station,
+                            completedBy,
+                            timeTaken,
+                            dateCompleted,
+                            id: new mongoose.Types.ObjectId()
+                        };
+                
+                        // Add the new station record to the ticket's stationRecords array
+                        ticket.stationRecords.push(newStationRecord);
+                
+                        // Save the updated ticket
+                        const updatedTicket = await ticket.save();
+                
+                        return res.status(201).json(updatedTicket);
+                    } catch (error) {
+                        res.status(500);
+                        throw new Error("Server error");
+                    }
+                case "DELETE":
+                    const { recordId } = req.params;
+                    try {
+                        const ticket = await Ticket.findByIdAndUpdate(
+                            id,
+                            { $pull: { stationRecords: { _id: recordId } } },
+                            { new: true }
+                        );
+                        return res.status(200).json(ticket);
+                    } catch (error) {
+                        res.status(500);
+                        throw new Error("Server error");
+                    }
+                default:
+                    return res.status(405).json({ message: "Method Not Allowed" });
+            }
+        } catch (err) {
+            res.status(500);
+            throw new Error("Server error");
+        }
+    });
+
+    /**
+     * Get all tickets with a specific status
+     * @param req Request object
+     * @param res Response object
+     * @returns Array of tickets
+     * @static
+     */
+    static searchTickets = asyncHandler(async (req: Request, res: Response) => {
+        const { search } = req.body;
+        const tickets = await Ticket.find({
+            $or: [
+                { status: { $regex: search, $options: "i" } },
+                { ticketNumber: { $regex: search, $options: "i" } },
+                { productName: { $regex: search, $options: "i" } },
+                { revision: { $regex: search, $options: "i" } },
+                { quantity: { $regex: search, $options: "i" } },
+                { lotNumber: { $regex: search, $options: "i" } },
+                { partInventory: { $regex: search, $options: "i" } },
+                { stationRecords: { $regex: search, $options: "i" } },
+            ],
+        });
+        res.json(tickets);
+    }); 
+}
+
+export default TicketController;</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>

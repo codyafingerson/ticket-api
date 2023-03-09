@@ -1,0 +1,353 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> controllers/UserController.ts</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-routers_users.html">routers/users</a></li></ul><h3>Classes</h3><ul><li><a href="AuthMiddleware.html">AuthMiddleware</a></li><li><a href="Server.html">Server</a></li><li><a href="TemplateController.html">TemplateController</a></li><li><a href="TicketController.html">TicketController</a></li><li><a href="UserController.html">UserController</a></li></ul><h3>Interfaces</h3><ul><li><a href="AuthenticatedRequest.html">AuthenticatedRequest</a></li><li><a href="TemplateDocument.html">TemplateDocument</a></li><li><a href="TicketDocument.html">TicketDocument</a></li><li><a href="UserDocument.html">UserDocument</a></li></ul><h3>Global</h3><ul><li><a href="global.html#TemplateSchema">TemplateSchema</a></li><li><a href="global.html#TicketSchema">TicketSchema</a></li><li><a href="global.html#UserSchema">UserSchema</a></li><li><a href="global.html#connectDatabase">connectDatabase</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#generateToken">generateToken</a></li><li><a href="global.html#redirectHttp">redirectHttp</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>controllers/UserController.ts</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import asyncHandler from "express-async-handler";
+import User, { UserDocument } from "../models/User";
+import bcrypt from "bcryptjs";
+import generateToken from "../utils/generateToken";
+import { Request, Response } from "express";
+
+/**
+ * User controller class for handling user related requests and responses
+ */
+class UserController {
+  /**
+   * Login user and return user data and token if successful 
+   * @static
+   * @param {Request} req - Express request object
+   * @param {Response} res - Express response object
+   * @returns {Promise&lt;void>}
+   * @throws {Error} - Invalid username or password
+   * @throws {Error} - Invalid user data
+   */
+  static loginUser = asyncHandler(async (req: Request, res: Response) => {
+    const { username, password } = req.body;
+
+    const user = await User.findOne({ username });
+
+    if (user &amp;&amp; (await bcrypt.compare(password, user.password))) {
+      res.json({
+        _id: user._id,
+        isAdmin: user.isAdmin,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        username: user.username,
+        token: generateToken(user._id.toString()),
+      });
+    } else {
+      res.status(401).json({ errorMessage: "Invalid username or password" });
+      throw new Error("Invalid username or password");
+    }
+  });
+
+  /**
+   * Register user and return user data and token if successful
+   * @static
+   * @param {Request} req - Express request object
+   * @param {Response} res - Express response object
+   * @returns {Promise&lt;void>}
+   * @throws {Error} - Please provide all required fields
+   * @throws {Error} - User already exists
+   * @throws {Error} - Invalid user data
+   */
+  static registerUser = asyncHandler(async (req: Request, res: Response) => {
+    const { isAdmin, firstName, lastName, email, username, password } =
+      req.body;
+
+    if (!firstName || !lastName || !username || !password) {
+      res.status(400);
+      throw new Error("Please provide all required fields");
+    }
+
+    const userExists = await User.findOne({ username });
+
+    if (userExists) {
+      res.status(400).json({ errorMessage: "User already exists" });
+      throw new Error("User already exists");
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const user = await User.create({
+      isAdmin,
+      firstName,
+      lastName,
+      email,
+      username,
+      password: hashedPassword,
+    });
+
+    if (user) {
+      res.status(201).json({
+        _id: user._id,
+        isAdmin: user.isAdmin,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        username: user.username,
+        // @ts-ignore - token is not a property of user
+        token: generateToken(user._id),
+      });
+    } else {
+      res.status(400).json({ errorMessage: "Invalid user data" });
+      throw new Error("Invalid user data");
+    }
+  });
+
+  /**
+   * Get user by id and return user data if successful
+   * @static
+   * @param {Request} req - Express request object
+   * @param {Response} res - Express response object
+   * @returns {Promise&lt;void>}
+   * @throws {Error} - No user id provided
+   * @throws {Error} - User not found
+   */
+  static getUser = asyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    if (!id) {
+      res.status(400);
+      throw new Error("No user id provided");
+    }
+
+    const user = await User.findById(id);
+
+    if (user) {
+      res.json({
+        _id: user._id,
+        isAdmin: user.isAdmin,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        username: user.username,
+      });
+    } else {
+      res.status(404).json({ errorMessage: "User not found" });
+      throw new Error("User not found");
+    }
+  });
+
+  /**
+   * Update user by id and return updated user data if successful
+   * @static
+   * @param {Request} req - Express request object
+   * @param {Response} res - Express response object
+   * @returns {Promise&lt;void>}
+   * @throws {Error} - No user id provided
+   * @throws {Error} - User not found
+   */
+  static updateUser = asyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    if (!id) {
+      res.status(400).json({ errorMessage: "No user id provided" });
+      throw new Error("No user id provided");
+    }
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      res.status(404).json({ errorMessage: "User not found" });
+      throw new Error("User not found");
+    }
+
+    const {
+      isAdmin = user.isAdmin,
+      firstName = user.firstName,
+      lastName = user.lastName,
+      email = user.email,
+      username = user.username,
+      password: newPassword,
+    } = req.body;
+
+    if (newPassword) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+      user.password = hashedPassword;
+    }
+
+    user.isAdmin = isAdmin;
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.email = email;
+    user.username = username;
+
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      isAdmin: updatedUser.isAdmin,
+      firstName: updatedUser.firstName,
+      lastName: updatedUser.lastName,
+      email: updatedUser.email,
+      username: updatedUser.username,
+      // @ts-ignore - token is not a property of user
+      token: generateToken(updatedUser._id.toString()),
+    });
+  });
+
+  /**
+   * Delete user by id and return success message if successful
+   * @static
+   * @param {Request} req - Express request object
+   * @param {Response} res - Express response object
+   * @returns {Promise&lt;void>}
+   * @throws {Error} - No user id provided
+   * @throws {Error} - User not found
+   */
+  static deleteUser = asyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    if (!id) {
+      res.status(400).json({ errorMessage: "No user id provided" });
+      throw new Error("No user id provided");
+    }
+
+    const user: UserDocument = await User.findById(id);
+
+    if (!user) {
+      res.status(404).json({ errorMessage: "User not found" });
+      throw new Error("User not found");
+    }
+
+    await user.remove();
+
+    res.json({ message: "User removed" });
+  });
+
+  /**
+   * Get all users and return array of users if successful
+   * @static
+   * @param {Request} req - Express request object
+   * @param {Response} res - Express response object
+   * @returns {Promise&lt;void>}
+   * @throws {Error} - No users found
+   * @throws {Error} - Users not found
+   */
+  static getUsers = asyncHandler(async (req: Request, res: Response) => {
+    const users = await User.find({});
+    if (!users) {
+      res.status(404).json({ errorMessage: "Users not found" });
+      throw new Error("Users not found");
+    }
+    res.json(users);
+  });
+}
+
+export default UserController;</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>
