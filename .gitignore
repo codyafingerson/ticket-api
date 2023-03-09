@@ -3,5 +3,4 @@ build
 .DS_Store
 *.cert
 *.key
-docs
 .env
