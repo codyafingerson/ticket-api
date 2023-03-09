@@ -50,5 +50,9 @@
             <td><code>npm install</code></td>
             <td>Install required dependencies for the application</td>
         </tr>
+        <tr>
+            <td><code>npm run build</code></td>
+            <td>Compile the application to the <a href="/build">build</a> directory</td>
+        </tr>
     </tbody>
 </table>
