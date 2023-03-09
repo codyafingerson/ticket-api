@@ -7,15 +7,15 @@
   "source": {
     "include": ["src", "src/routes"],
     "includePattern": "\\.(jsx|js|ts|tsx)$",
-    "excludePattern": "(node_modules/|docs)"
+    "excludePattern": "(node_modules/|docs|build)"
   },
   "opts": {
     "destination": "./docs",
     "recurse": true,
-    "readme": "./readme.md",
+    "readme": "./README.md",
     "template": "node_modules/better-docs"
   },
   "tags": {
-    "allowUnknownTags": ["optional"]
+    "allowUnknownTags": [true]
   }
 }
