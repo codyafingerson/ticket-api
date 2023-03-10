@@ -1,5 +1,3 @@
-import * as https from 'https';
-import * as fs from 'fs';
 import express from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
@@ -54,12 +52,7 @@ class Server {
     }
 
     public start(): void {
-        const options = {
-            key: fs.readFileSync(process.env.PATH_TO_KEY),
-            cert: fs.readFileSync(process.env.PATH_TO_CERT)
-        };
-
-        https.createServer(options, this.app).listen(this.port, () => {
+        this.app.listen(this.port, () => {
             console.log(`Server running in ${process.env.NODE_ENV} mode on port ${this.port}`);
         });
     }
