@@ -1,6 +1,5 @@
 /** Express router providing user related routes
- * @module routes/users
- * @description /api/users
+ * @module /api/users
  * @requires express
  */
 import { Router } from "express";

@@ -1,6 +1,5 @@
 /** Express router providing user related routes
- * @module routes/template
- * @description /api/templates
+ * @module /api/templates
  * @requires express
  */
 

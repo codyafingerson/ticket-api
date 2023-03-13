@@ -1,6 +1,5 @@
 /** Express router providing user related routes
- * @module routes/tickets
- * @description /api/tickets
+ * @module /api/tickets
  * @requires express
  */
 
