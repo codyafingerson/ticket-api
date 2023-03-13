@@ -2,7 +2,6 @@ import express from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import connectDatabase from './config/connectDatabase';
-import redirectHttp from './middleware/redirectHttp';
 import userRoutes from './routes/userRoutes';
 import ticketRoutes from './routes/ticketRoutes';
 import templateRoutes from "./routes/templateRoutes";
@@ -17,7 +16,7 @@ class Server {
 
     constructor() {
         this.app = express();
-        this.port = parseInt(process.env.PORT || "443", 10);
+        this.port = parseInt(process.env.PORT || "8080", 10);
 
         this.config();
         this.routes();
@@ -37,7 +36,6 @@ class Server {
 
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: false }));
-        this.app.use(redirectHttp);
         this.app.use('/docs', express.static('docs')); // Serve docs folder
     }
 

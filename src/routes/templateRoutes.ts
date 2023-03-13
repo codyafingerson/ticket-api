@@ -1,3 +1,9 @@
+/** Express router providing user related routes
+ * @module routes/template
+ * @description /api/templates
+ * @requires express
+ */
+
 import { Router } from "express";
 
 import TemplateController from "../controllers/TemplateController";

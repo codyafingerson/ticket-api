@@ -1,3 +1,9 @@
+/** Express router providing user related routes
+ * @module routes/tickets
+ * @description /api/tickets
+ * @requires express
+ */
+
 import { Router } from "express";
 import TicketController from "../controllers/TicketController";
 import AuthMiddleware from "../middleware/AuthMiddleware";
