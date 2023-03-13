@@ -7,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> models/Ticket.ts</title>
+  <title> routes/templateRoutes.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -76,7 +76,7 @@
             <div class="content">
                 <header class="page-title">
                     <p>Source</p>
-                    <h1>models/Ticket.ts</h1>
+                    <h1>routes/templateRoutes.ts</h1>
                 </header>
                 
 
@@ -85,109 +85,25 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import mongoose, { Schema, Document } from 'mongoose';
-
-/**
- * Ticket Interface
- * @interface TicketDocument
- * @extends {Document}
+            <pre class="prettyprint source linenums"><code>/** Express router providing user related routes
+ * @module /api/templates
+ * @requires express
  */
-export interface TicketDocument extends Document {
-    status: string;
-    ticketNumber: number;
-    productName: string;
-    revision: string;
-    quantity: number;
-    lotNumber: number;
-    notes: [{
-        body: string;
-        createdBy: string;
-    }];
-    partInventory: [{
-        id: mongoose.Types.ObjectId;
-        partNumber: string;
-        description: string;
-        currentLot: string;
-    }];
-    stationRecords: [{
-        id: mongoose.Types.ObjectId;
-        station: string;
-        completedBy: string;
-        timeTaken: number;
-        dateCompleted: Date;
-    }];
-    createdAt: Date;
-    updatedAt: Date;
-    remove: () => Promise&lt;TicketDocument>;
-}
 
-/**
- * Ticket Schema
- */
-const TicketSchema: Schema = new Schema&lt;TicketDocument>({
-    status: {
-        type: String,
-        enum: ['open', 'in-progress', 'closed']
-    },
-    ticketNumber: {
-        type: Number,
-        required: true,
-    },
-    productName: {
-        type: String,
-        required: true,
-    },
-    revision: {
-        type: String,
-    },
-    quantity: {
-        type: Number,
-    },
-    lotNumber: {
-        type: Number
-    },
-    notes: [{
-        body: {
-            type: String,
-            maxLength: 255,
-        },
-        createdBy: {
-            type: String,
-        },
-    }],
-    partInventory: [{
-        partNumber: {
-            type: String
-        },
-        description: {
-            type: String
-        },
-        currentLot: {
-            type: String
-        }
-    }],
-    stationRecords: [{
-        station: {
-            type: String
-        },
-        completedBy: {
-            type: String
-        },
-        timeTaken: {
-            type: Number
-        },
-        dateCompleted: {
-            type: Date
-        }
-    }]
-},
-    {
-        timestamps: true
-    });
+import { Router } from "express";
 
-const Ticket = mongoose.model&lt;TicketDocument>('Ticket', TicketSchema);
+import TemplateController from "../controllers/TemplateController";
+import AuthMiddleware from "../middleware/AuthMiddleware";
 
-export default Ticket;</code></pre>
+const router = Router();
+
+router.post("/", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TemplateController.createTemplate);
+router.get("/", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TemplateController.getTemplates);
+router.get("/:id", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TemplateController.getTemplateById);
+router.put("/:id", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TemplateController.updateTemplate);
+router.delete("/:id", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TemplateController.deleteTemplate);
+
+export default router;</code></pre>
         </article>
     </section>
 

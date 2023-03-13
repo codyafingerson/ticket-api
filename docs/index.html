@@ -66,7 +66,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-routers_users.html">routers/users</a></li></ul><h3>Classes</h3><ul><li><a href="AuthMiddleware.html">AuthMiddleware</a></li><li><a href="Server.html">Server</a></li><li><a href="TemplateController.html">TemplateController</a></li><li><a href="TicketController.html">TicketController</a></li><li><a href="UserController.html">UserController</a></li></ul><h3>Interfaces</h3><ul><li><a href="AuthenticatedRequest.html">AuthenticatedRequest</a></li><li><a href="TemplateDocument.html">TemplateDocument</a></li><li><a href="TicketDocument.html">TicketDocument</a></li><li><a href="UserDocument.html">UserDocument</a></li></ul><h3>Global</h3><ul><li><a href="global.html#TemplateSchema">TemplateSchema</a></li><li><a href="global.html#TicketSchema">TicketSchema</a></li><li><a href="global.html#UserSchema">UserSchema</a></li><li><a href="global.html#connectDatabase">connectDatabase</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#generateToken">generateToken</a></li><li><a href="global.html#redirectHttp">redirectHttp</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-_api_templates.html">/api/templates</a></li><li><a href="module-_api_tickets.html">/api/tickets</a></li><li><a href="module-_api_users.html">/api/users</a></li></ul><h3>Classes</h3><ul><li><a href="AuthMiddleware.html">AuthMiddleware</a></li><li><a href="Server.html">Server</a></li><li><a href="TemplateController.html">TemplateController</a></li><li><a href="TicketController.html">TicketController</a></li><li><a href="UserController.html">UserController</a></li></ul><h3>Interfaces</h3><ul><li><a href="AuthenticatedRequest.html">AuthenticatedRequest</a></li><li><a href="TemplateDocument.html">TemplateDocument</a></li><li><a href="TicketDocument.html">TicketDocument</a></li><li><a href="UserDocument.html">UserDocument</a></li></ul><h3>Global</h3><ul><li><a href="global.html#TemplateSchema">TemplateSchema</a></li><li><a href="global.html#TicketSchema">TicketSchema</a></li><li><a href="global.html#UserSchema">UserSchema</a></li><li><a href="global.html#connectDatabase">connectDatabase</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#generateToken">generateToken</a></li></ul></div>
                 
             </nav>
         </div>
@@ -100,68 +100,62 @@
 
 
     <section>
-        <article><header>
-    <h1>Operation Ticket Management API</h1>
-</header>
-<hr />
+        <article><h1>Ticket Management API</h1>
+<p>The Ticket Management API is a Representational State Transfer (RESTful) API developed using TypeScript and the Express library. The API's backend is powered by MongoDB, which provides full CRUD (Create, Read, Update, Delete) functionality for managing Operation Tickets. This functionality allows businesses to effectively track and manage internal tickets related to customer orders, including those associated with assembly lines. The API utilizes the popular Mongoose library to facilitate connections to MongoDB and enforces user authentication through the use of JSON Web Tokens (JWTs). This comprehensive solution presents businesses with a robust and flexible option for streamlining their internal ticketing processes.</p>
+<hr>
 <h2>Getting started tips</h2>
 <p>This application uses the https protocol. Therefore, it is recommended to follow the steps outlined below.</p>
-</hr>
 <h3>Setting the application up on your machine</h3>
 <ol>
-    <li>Create the <code>.env</code> file in the root of the project. (See <code>.env.sample</code> for guidance.)
-    <li>Due to the application using the https protocol, begin by generating a <code>certificate.crt</code> file and a <code>private.key</code> file, using the command <code>openssl req -nodes -new -x509 -keyout server.key -out server.cert</code> assuming you have the openssl cli installed. If not, you can install it <a href="https://www.openssl.org/source/">here</a></li>
-    <li>Install corresponding Node.js packaged using the <code>npm install</code> command.</li>
-    <li>Test your configuration is running properly by running <code>npm run dev</code> or <code>npm run start</code>.
+<li>Create the <code>.env</code> file in the root of the project. (See <a href=".env.sample"><code>.env.sample</code></a> for guidance.)</li>
+<li>Due to the application using the https protocol, begin by generating a <code>certificate.crt</code> file and a <code>private.key</code> file, using the command <code>openssl req -nodes -new -x509 -keyout server.key -out server.cert</code> assuming you have the openssl cli installed. If not, you can install it <a href="https://www.openssl.org/source/">here</a></li>
+<li>Install corresponding Node.js packaged using the <code>npm install</code> command.</li>
+<li>Test your configuration is running properly by running <code>npm run dev</code> or <code>npm run start</code>.</li>
 </ol>
-<hr />
+<hr>
 <h2>API Documentation</h2>
 <h3>Authentication</h3>
-<p>Authentication is done using JWT tokens. To get a token, make a POST request to
-    <code>https://localhost:{YOUR_PORT}/api/auth/login</code> with the following payload</p>
-<sub>
-    <p>Keys annotated with * are required. See models/User for which fields are required in the database.</p>
-</sub>
-<pre>
-{
-      "isAdmin": null,
-    * "firstname": "John",
-    * "lastname": "Doe",
-    * "username": "johndoe",
-      "email": "jdoe@exmaple.com"
-    * "password": "1234"
+<p>Authentication is done using JWT tokens. To get a token, make a POST request to <code>https://localhost:{YOUR_PORT}/api/auth/login</code> with the following payload</p>
+<p><sup>Keys annotated with * are required. See <a href="src/models/User.ts">models/User</a> for which fields are required in the database.</sup></p>
+<pre><code>{
+      &quot;isAdmin&quot;: null,
+    * &quot;firstname&quot;: &quot;John&quot;,
+    * &quot;lastname&quot;: &quot;Doe&quot;,
+    * &quot;username&quot;: &quot;johndoe&quot;,
+      &quot;email&quot;: &quot;jdoe@exmaple.com&quot;
+    * &quot;password&quot;: &quot;1234&quot;
 }
-</pre>
+</code></pre>
 <h4>Commands available in this application</h4>
 <table>
-    <thead>
-        <tr>
-            <th>Command</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><code>npm install</code></td>
-            <td>Install required dependencies for the application</td>
-        </tr>
-        <tr>
-            <td><code>npm run build</code></td>
-            <td>Compile the application to the build directory</td>
-        </tr>
-        <tr>
-            <td><code>npm run start</code></td>
-            <td>Start the application in production mode. (Must run build command before!)</td>
-        </tr>
-        <tr>
-            <td><code>npm run dev</code></td>
-            <td>Start the application in development mode. This will also run the typescript compiler in watch mode as well as utilize the npm package nodemon, which is install as a dev dependency</td>
-        </tr>
-        <tr>
-            <td><code>npm run docs</code></td>
-            <td>Build the documentation included in the source code to the docs directory. The route <code>/docs</code> will become available when the application is running.</td>
-        </tr>
-    </tbody>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>npm install</code></td>
+<td>Install required dependencies for the application</td>
+</tr>
+<tr>
+<td><code>npm run build</code></td>
+<td>Compile the application to the build directory</td>
+</tr>
+<tr>
+<td><code>npm run start</code></td>
+<td>Start the application in production mode. (Must run build command before!)</td>
+</tr>
+<tr>
+<td><code>npm run dev</code></td>
+<td>Start the application in development mode. This will also run the typescript compiler in watch mode as well as utilize the npm package nodemon, which is install as a dev dependency</td>
+</tr>
+<tr>
+<td><code>npm run docs</code></td>
+<td>Build the documentation included in the source code to the <a href="/docs"><code>docs</code></a> directory. The route <code>/docs</code> will become available when the application is running.</td>
+</tr>
+</tbody>
 </table></article>
     </section>
 

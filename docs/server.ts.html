@@ -68,7 +68,7 @@
             
             <nav>
                 
-                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-routers_users.html">routers/users</a></li></ul><h3>Classes</h3><ul><li><a href="AuthMiddleware.html">AuthMiddleware</a></li><li><a href="Server.html">Server</a></li><li><a href="TemplateController.html">TemplateController</a></li><li><a href="TicketController.html">TicketController</a></li><li><a href="UserController.html">UserController</a></li></ul><h3>Interfaces</h3><ul><li><a href="AuthenticatedRequest.html">AuthenticatedRequest</a></li><li><a href="TemplateDocument.html">TemplateDocument</a></li><li><a href="TicketDocument.html">TicketDocument</a></li><li><a href="UserDocument.html">UserDocument</a></li></ul><h3>Global</h3><ul><li><a href="global.html#TemplateSchema">TemplateSchema</a></li><li><a href="global.html#TicketSchema">TicketSchema</a></li><li><a href="global.html#UserSchema">UserSchema</a></li><li><a href="global.html#connectDatabase">connectDatabase</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#generateToken">generateToken</a></li><li><a href="global.html#redirectHttp">redirectHttp</a></li></ul></div>
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-_api_templates.html">/api/templates</a></li><li><a href="module-_api_tickets.html">/api/tickets</a></li><li><a href="module-_api_users.html">/api/users</a></li></ul><h3>Classes</h3><ul><li><a href="AuthMiddleware.html">AuthMiddleware</a></li><li><a href="Server.html">Server</a></li><li><a href="TemplateController.html">TemplateController</a></li><li><a href="TicketController.html">TicketController</a></li><li><a href="UserController.html">UserController</a></li></ul><h3>Interfaces</h3><ul><li><a href="AuthenticatedRequest.html">AuthenticatedRequest</a></li><li><a href="TemplateDocument.html">TemplateDocument</a></li><li><a href="TicketDocument.html">TicketDocument</a></li><li><a href="UserDocument.html">UserDocument</a></li></ul><h3>Global</h3><ul><li><a href="global.html#TemplateSchema">TemplateSchema</a></li><li><a href="global.html#TicketSchema">TicketSchema</a></li><li><a href="global.html#UserSchema">UserSchema</a></li><li><a href="global.html#connectDatabase">connectDatabase</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#generateToken">generateToken</a></li></ul></div>
                 
             </nav>
         </div>
@@ -85,13 +85,10 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import * as https from 'https';
-import * as fs from 'fs';
-import express from 'express';
+            <pre class="prettyprint source linenums"><code>import express from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import connectDatabase from './config/connectDatabase';
-import redirectHttp from './middleware/redirectHttp';
 import userRoutes from './routes/userRoutes';
 import ticketRoutes from './routes/ticketRoutes';
 import templateRoutes from "./routes/templateRoutes";
@@ -106,7 +103,7 @@ class Server {
 
     constructor() {
         this.app = express();
-        this.port = parseInt(process.env.PORT || "443", 10);
+        this.port = parseInt(process.env.PORT || "8080", 10);
 
         this.config();
         this.routes();
@@ -126,7 +123,6 @@ class Server {
 
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: false }));
-        this.app.use(redirectHttp);
         this.app.use('/docs', express.static('docs')); // Serve docs folder
     }
 
@@ -141,12 +137,7 @@ class Server {
     }
 
     public start(): void {
-        const options = {
-            key: fs.readFileSync(process.env.PATH_TO_KEY),
-            cert: fs.readFileSync(process.env.PATH_TO_CERT)
-        };
-
-        https.createServer(options, this.app).listen(this.port, () => {
+        this.app.listen(this.port, () => {
             console.log(`Server running in ${process.env.NODE_ENV} mode on port ${this.port}`);
         });
     }

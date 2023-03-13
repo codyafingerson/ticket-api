@@ -7,7 +7,7 @@
   
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> models/Ticket.ts</title>
+  <title> routes/ticketRoutes.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -76,7 +76,7 @@
             <div class="content">
                 <header class="page-title">
                     <p>Source</p>
-                    <h1>models/Ticket.ts</h1>
+                    <h1>routes/ticketRoutes.ts</h1>
                 </header>
                 
 
@@ -85,109 +85,44 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import mongoose, { Schema, Document } from 'mongoose';
-
-/**
- * Ticket Interface
- * @interface TicketDocument
- * @extends {Document}
+            <pre class="prettyprint source linenums"><code>/** Express router providing user related routes
+ * @module /api/tickets
+ * @requires express
  */
-export interface TicketDocument extends Document {
-    status: string;
-    ticketNumber: number;
-    productName: string;
-    revision: string;
-    quantity: number;
-    lotNumber: number;
-    notes: [{
-        body: string;
-        createdBy: string;
-    }];
-    partInventory: [{
-        id: mongoose.Types.ObjectId;
-        partNumber: string;
-        description: string;
-        currentLot: string;
-    }];
-    stationRecords: [{
-        id: mongoose.Types.ObjectId;
-        station: string;
-        completedBy: string;
-        timeTaken: number;
-        dateCompleted: Date;
-    }];
-    createdAt: Date;
-    updatedAt: Date;
-    remove: () => Promise&lt;TicketDocument>;
-}
 
-/**
- * Ticket Schema
- */
-const TicketSchema: Schema = new Schema&lt;TicketDocument>({
-    status: {
-        type: String,
-        enum: ['open', 'in-progress', 'closed']
-    },
-    ticketNumber: {
-        type: Number,
-        required: true,
-    },
-    productName: {
-        type: String,
-        required: true,
-    },
-    revision: {
-        type: String,
-    },
-    quantity: {
-        type: Number,
-    },
-    lotNumber: {
-        type: Number
-    },
-    notes: [{
-        body: {
-            type: String,
-            maxLength: 255,
-        },
-        createdBy: {
-            type: String,
-        },
-    }],
-    partInventory: [{
-        partNumber: {
-            type: String
-        },
-        description: {
-            type: String
-        },
-        currentLot: {
-            type: String
-        }
-    }],
-    stationRecords: [{
-        station: {
-            type: String
-        },
-        completedBy: {
-            type: String
-        },
-        timeTaken: {
-            type: Number
-        },
-        dateCompleted: {
-            type: Date
-        }
-    }]
-},
-    {
-        timestamps: true
-    });
+import { Router } from "express";
+import TicketController from "../controllers/TicketController";
+import AuthMiddleware from "../middleware/AuthMiddleware";
 
-const Ticket = mongoose.model&lt;TicketDocument>('Ticket', TicketSchema);
+const router = Router();
 
-export default Ticket;</code></pre>
+// Tickets
+router.route("/")
+  .post(AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.createTicket)
+  .get(AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.getTickets);
+
+router.route("/:id")
+  .get(AuthMiddleware.verifyJWT, TicketController.getTicketById)
+  .put(AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.updateTicket)
+  .delete(AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.deleteTicket);
+
+router.get("/status/open", TicketController.getTicketsByStatus);
+router.get("/status/closed", TicketController.getTicketsByStatus);
+router.get("/status/in-progress", TicketController.getTicketsByStatus);
+
+// Notes
+router.put("/:id/new-note", AuthMiddleware.verifyJWT, TicketController.noteHandler);
+router.delete("/:id/remove-note/:noteId", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.noteHandler);
+
+// Part inventory
+router.put("/:id/add-part", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.partInventoryHandler);
+router.delete("/:id/remove-part/:partId", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.partInventoryHandler);
+
+// Station records
+router.put("/:id/add-station", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.stationRecordsHandler);
+router.delete("/:id/remove-station/:stationId", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.stationRecordsHandler);
+
+export default router;</code></pre>
         </article>
     </section>
 
