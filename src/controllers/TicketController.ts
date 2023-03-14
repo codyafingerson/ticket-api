@@ -143,7 +143,7 @@ class TicketController {
         const ticket: TicketDocument | null = await Ticket.findById(req.params.id);
         if (ticket) {
             // @ts-ignore - TS doesn't like the mongoose delete method
-            await ticket.remove();
+            await Ticket.deleteOne({_id: req.params.id})
             res.json({ message: "Ticket removed" });
         } else {
             res.status(404);
@@ -161,10 +161,6 @@ class TicketController {
     static getTicketsByStatus = asyncHandler(async (req: Request, res: Response) => {
         const { status } = req.params;
         const tickets = await Ticket.find({ status });
-        if (tickets.length === 0) {
-            res.status(404);
-            throw new Error("No tickets found");
-        }
         res.json(tickets);
     });
 

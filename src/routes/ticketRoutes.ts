@@ -19,9 +19,7 @@ router.route("/:id")
   .put(AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.updateTicket)
   .delete(AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.deleteTicket);
 
-router.get("/status/open", TicketController.getTicketsByStatus);
-router.get("/status/closed", TicketController.getTicketsByStatus);
-router.get("/status/in-progress", TicketController.getTicketsByStatus);
+router.get("/status/:status", TicketController.getTicketsByStatus);
 
 // Notes
 router.put("/:id/new-note", AuthMiddleware.verifyJWT, TicketController.noteHandler);
