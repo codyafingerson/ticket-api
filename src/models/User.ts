@@ -9,7 +9,6 @@ export interface UserDocument extends Document {
     isAdmin: boolean;
     firstName: string;
     lastName: string;
-    email: string;
     username: string;
     password: string;
     createdAt: Date;
@@ -33,10 +32,6 @@ const UserSchema: Schema = new Schema<UserDocument>({
     lastName: {
         type: String,
         required: [true, 'Please provide a last name']
-    },
-    email: {
-        type: String,
-        unique: true
     },
     username: {
         type: String,

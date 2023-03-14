@@ -28,7 +28,6 @@ class UserController {
         isAdmin: user.isAdmin,
         firstName: user.firstName,
         lastName: user.lastName,
-        email: user.email,
         username: user.username,
         token: generateToken(user._id.toString()),
       });
@@ -49,7 +48,7 @@ class UserController {
    * @throws {Error} - Invalid user data
    */
   static registerUser = asyncHandler(async (req: Request, res: Response) => {
-    const { isAdmin, firstName, lastName, email, username, password } =
+    const { isAdmin, firstName, lastName, username, password } =
       req.body;
 
     if (!firstName || !lastName || !username || !password) {
@@ -71,7 +70,6 @@ class UserController {
       isAdmin,
       firstName,
       lastName,
-      email,
       username,
       password: hashedPassword,
     });
@@ -82,7 +80,6 @@ class UserController {
         isAdmin: user.isAdmin,
         firstName: user.firstName,
         lastName: user.lastName,
-        email: user.email,
         username: user.username,
         // @ts-ignore - token is not a property of user
         token: generateToken(user._id),
@@ -117,8 +114,6 @@ class UserController {
         _id: user._id,
         isAdmin: user.isAdmin,
         firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
         username: user.username,
       });
     } else {
@@ -155,7 +150,6 @@ class UserController {
       isAdmin = user.isAdmin,
       firstName = user.firstName,
       lastName = user.lastName,
-      email = user.email,
       username = user.username,
       password: newPassword,
     } = req.body;
@@ -169,7 +163,6 @@ class UserController {
     user.isAdmin = isAdmin;
     user.firstName = firstName;
     user.lastName = lastName;
-    user.email = email;
     user.username = username;
 
     const updatedUser = await user.save();
@@ -179,7 +172,6 @@ class UserController {
       isAdmin: updatedUser.isAdmin,
       firstName: updatedUser.firstName,
       lastName: updatedUser.lastName,
-      email: updatedUser.email,
       username: updatedUser.username,
       // @ts-ignore - token is not a property of user
       token: generateToken(updatedUser._id.toString()),

@@ -24,6 +24,7 @@ class TicketController {
             revision,
             quantity,
             lotNumber,
+            notes,
             partInventory,
             stationRecords,
         } = req.body;
@@ -35,6 +36,7 @@ class TicketController {
             revision,
             quantity,
             lotNumber,
+            notes,
             partInventory,
             stationRecords,
         });
@@ -48,6 +50,7 @@ class TicketController {
                 revision: ticket.revision,
                 quantity: ticket.quantity,
                 lotNumber: ticket.lotNumber,
+                notes: ticket.notes,
                 partInventory: ticket.partInventory,
                 stationRecords: ticket.stationRecords,
             });

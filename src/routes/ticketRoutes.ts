@@ -30,7 +30,7 @@ router.put("/:id/add-part", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, Ti
 router.delete("/:id/remove-part/:partId", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.partInventoryHandler);
 
 // Station records
-router.put("/:id/add-station", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.stationRecordsHandler);
+router.put("/:id/update-station", AuthMiddleware.verifyJWT, TicketController.stationRecordsHandler);
 router.delete("/:id/remove-station/:stationId", AuthMiddleware.verifyJWT, AuthMiddleware.isAdmin, TicketController.stationRecordsHandler);
 
 export default router;
