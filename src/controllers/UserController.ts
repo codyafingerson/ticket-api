@@ -216,14 +216,11 @@ class UserController {
    * @throws {Error} - No users found
    * @throws {Error} - Users not found
    */
-  static getUsers = asyncHandler(async (req: Request, res: Response) => {
-    const users = await User.find({});
-    if (!users) {
-      res.status(404).json({ errorMessage: "Users not found" });
-      throw new Error("Users not found");
-    }
-    res.json(users);
-  });
+  static getAllUsers = asyncHandler(async (req: Request, res: Response) => {
+    const users = await User.find({}).select('-password');
+
+    res.status(200).json(users);
+});
 }
 
 export default UserController;
