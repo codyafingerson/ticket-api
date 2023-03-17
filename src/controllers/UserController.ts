@@ -75,15 +75,7 @@ class UserController {
     });
 
     if (user) {
-      res.status(201).json({
-        _id: user._id,
-        isAdmin: user.isAdmin,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        username: user.username,
-        // @ts-ignore - token is not a property of user
-        token: generateToken(user._id),
-      });
+      res.status(201).json({success: "User created successfully"});
     } else {
       res.status(400).json({ errorMessage: "Invalid user data" });
       throw new Error("Invalid user data");
@@ -114,6 +106,7 @@ class UserController {
         _id: user._id,
         isAdmin: user.isAdmin,
         firstName: user.firstName,
+        lastName: user.lastName,
         username: user.username,
       });
     } else {
@@ -202,8 +195,8 @@ class UserController {
       throw new Error("User not found");
     }
 
-    await user.remove();
-
+    const deletedUser = await User.findByIdAndDelete(id);
+    if(!deletedUser) throw new Error("User not found");
     res.json({ message: "User removed" });
   });
 
